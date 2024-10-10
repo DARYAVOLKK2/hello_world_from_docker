@@ -10,9 +10,10 @@ stages:
 build:
   stage: build
   script:
-    - poetry install --with dev  # Устанавливаем dev-зависимости
+    - poetry install --all-extras --with dev
 
 test:
   stage: test
   script:
+    - poetry run pytest --version  # Проверяем наличие pytest
     - poetry run pytest
