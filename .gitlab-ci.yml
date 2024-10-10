@@ -10,7 +10,7 @@ stages:
 build:
   stage: build
   script:
-    - poetry install
+    - poetry install --with dev  # Устанавливаем dev-зависимости
 
 test:
   stage: test
