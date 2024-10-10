@@ -10,7 +10,7 @@ stages:
 build:
   stage: build
   script:
-    - poetry install --all-extras --with dev
+    - poetry install --with dev
 
 test:
   stage: test
