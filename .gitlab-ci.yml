@@ -1,21 +1,47 @@
 image: python:3.11
 
-before_script:
-  - pip install --upgrade pip  # Обновляем pip до последней версии
-  - pip install poetry
+services:
+  - docker:dind  # Docker-in-Docker для сборки Docker образов
+
+variables:
+  DOCKER_DRIVER: overlay2
 
 stages:
   - build
+  - build_docker
   - test
+  - test_docker
+  - publish
 
+# Этап сборки и установки зависимостей с Poetry
 build:
   stage: build
   script:
     - poetry install --with dev
 
+# Этап запуска тестов с использованием Poetry
 test:
   stage: test
   script:
-    - poetry install --with dev  # Повторная установка (если это отдельный runner)
+    - poetry install --with dev  # Повторная установка зависимостей, если это отдельный runner
     - poetry run pytest --version  # Проверяем наличие pytest
     - poetry run pytest hello_world/tests  # Запуск тестов
+
+# Этап сборки Docker-образа
+build_docker:
+  stage: build_docker
+  script:
+    - docker build -t daryavolkk/hello-world .
+
+# Этап тестирования с использованием Docker-контейнера
+test_docker:
+  stage: test_docker
+  script:
+    - docker run daryavolkk/hello-world pytest hello_world/tests
+
+# Этап публикации Docker-образа в Docker Hub
+publish:
+  stage: publish
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" docker.io
+    - docker push daryavolkk/hello-world
