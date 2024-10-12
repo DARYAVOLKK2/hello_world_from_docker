@@ -16,5 +16,6 @@ build:
 test:
   stage: test
   script:
+    - poetry install --with dev  # Повторная установка (если это отдельный runner)
     - poetry run pytest --version  # Проверяем наличие pytest
-    - poetry run pytest hello_world/tests 
+    - poetry run pytest hello_world/tests  # Запуск тестов
