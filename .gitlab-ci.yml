@@ -17,4 +17,4 @@ test:
   stage: test
   script:
     - poetry run pytest --version  # Проверяем наличие pytest
-    - poetry run pytest
+    - poetry run pytest hello_world/tests 
